@@ -30,6 +30,8 @@ class FileServiceImpl @Autowired constructor(properties: FileProperties) : FileS
             if (file.isEmpty) {
                 throw FileException("Failed to store empty file ${file.originalFilename}")
             }
+            // Files.copy 复制文件到指定位置
+            // resolve 合并文件路径
             Files.copy(file.inputStream, rootLocation.resolve(file.originalFilename))
         } catch (e: IOException) {
             throw FileException("Failed to store file ${file.originalFilename} $e")
@@ -37,6 +39,8 @@ class FileServiceImpl @Autowired constructor(properties: FileProperties) : FileS
     }
 
     override fun loadAll(): Stream<Path> {
+        // Files.walk 获取目录下的文件
+        // relativize 构造一个文件路径
         return Files.walk(rootLocation, 1)
             .filter { it != rootLocation }
             .map { rootLocation.relativize(it) }
